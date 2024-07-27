@@ -138,7 +138,14 @@ public class KeyedDataGenerator implements DataGenerator
 		jsonObject.add("fuel", new JsonPrimitive(itemType.isFuel()));
 		jsonObject.add("blockType", new JsonPrimitive(itemType.hasBlockType()));
 		jsonObject.add("translationKey", new JsonPrimitive(itemType.getTranslationKey()));
-		jsonObject.add("material",new JsonPrimitive(itemType.asMaterial().name()));
+		jsonObject.add("material", new JsonPrimitive(itemType.asMaterial().name()));
+		jsonObject.add("rarity", new JsonPrimitive(itemType.getItemRarity().toString()));
+		jsonObject.add("creativeCategory", new JsonPrimitive(itemType.getCreativeCategory().toString()));
+		jsonObject.add("isCompostable",new JsonPrimitive(itemType.isCompostable()));
+		if (itemType.isCompostable())
+		{
+			jsonObject.add("compostChance",new JsonPrimitive("%sF".formatted(itemType.getCompostChance())));
+		}
 		if (itemType != ItemType.AIR)
 		{
 			jsonObject.add("metaClass", new JsonPrimitive(itemType.getItemMetaClass().getSimpleName()));
