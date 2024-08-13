@@ -11,7 +11,10 @@ import com.google.gson.stream.JsonWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class JsonUtil
@@ -49,11 +52,26 @@ public class JsonUtil
 		if (json instanceof JsonArray jsonArray)
 		{
 			List<JsonElement> jsonList = jsonArray.asList();
+			jsonList.forEach(JsonUtil::sortDFS);
 			jsonList.sort(JsonUtil::compareAlphabetically);
 		}
 		if (json instanceof JsonObject jsonObject)
 		{
 			jsonObject.entrySet().forEach(entry -> sortDFS(entry.getValue()));
+			sortObject(jsonObject);
+		}
+	}
+
+	private static void sortObject(JsonObject jsonObject)
+	{
+		Map<String, JsonElement> map = jsonObject.asMap();
+		List<String> keys = new ArrayList<>(map.keySet());
+		Map<String, JsonElement> mapCopy = new HashMap<>(map);
+		map.clear();
+		keys.sort(String::compareTo);
+		for (String key : keys)
+		{
+			jsonObject.add(key, mapCopy.get(key));
 		}
 	}
 
