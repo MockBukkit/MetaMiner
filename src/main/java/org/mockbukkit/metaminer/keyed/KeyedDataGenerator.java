@@ -7,10 +7,12 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Keyed;
+import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.generator.structure.Structure;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -100,6 +102,11 @@ public class KeyedDataGenerator implements DataGenerator
 		jsonObject.add("category", new JsonPrimitive(potionEffectType.getEffectCategory().toString()));
 	}
 
+	/**
+	 * Add the given enchantment's properties to the given jsonObject
+	 * @param jsonObject the jsonObject to add the enchantment's properties to
+	 * @param enchantment the enchantment to add the properties of
+	 */
 	private void addEnchantmentProperties(JsonObject jsonObject, Enchantment enchantment)
 	{
 		JsonArray displayNames = new JsonArray();
@@ -136,6 +143,17 @@ public class KeyedDataGenerator implements DataGenerator
 			}
 		}
 		jsonObject.add("conflicts", conflicts);
+		JsonArray enchantables = new JsonArray();
+		for (Material material : Material.values())
+		{
+			if (material.isItem()) {
+				ItemStack itemStack = new ItemStack(material);
+				if (enchantment.canEnchantItem(itemStack)) {
+					enchantables.add(material.getKey().toString());
+				}
+			}
+		}
+		jsonObject.add("enchantables", enchantables);
 	}
 
 }
