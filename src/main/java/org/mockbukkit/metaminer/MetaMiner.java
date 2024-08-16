@@ -10,6 +10,7 @@ import org.mockbukkit.metaminer.internal.tags.InternalTagDataGenerator;
 import org.mockbukkit.metaminer.keyed.KeyedDataGenerator;
 import org.mockbukkit.metaminer.keyed.RegistryKeyClassDataGenerator;
 import org.mockbukkit.metaminer.tags.TagDataGenerator;
+import org.mockbukkit.metaminer.translation.TranslationDataGenerator;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,7 +54,8 @@ public class MetaMiner extends JavaPlugin
 	{
 		return List.of(new KeyedDataGenerator(this.getDataFolder()), new InternalTagDataGenerator(this.getDataFolder()),
 				new PotionDataGenerator(this.getDataFolder()), new TagDataGenerator(this.getDataFolder()),
-				new MaterialDataGenerator(this.getDataFolder()), new RegistryKeyClassDataGenerator(this.getDataFolder()));
+				new MaterialDataGenerator(this.getDataFolder()), new RegistryKeyClassDataGenerator(this.getDataFolder()),
+				new TranslationDataGenerator(this.getDataFolder()));
 	}
 
 }
