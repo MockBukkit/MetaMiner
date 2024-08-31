@@ -11,6 +11,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,7 @@ public class JsonUtil
 			throw new IOException("Could not create file: " + destinationFile);
 		}
 		sortDFS(json);
-		try (PrintWriter writer = new PrintWriter(destinationFile))
+		try (PrintWriter writer = new PrintWriter(destinationFile, StandardCharsets.UTF_8))
 		{
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			JsonWriter jsonWriter = new JsonWriter(writer);
