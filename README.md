@@ -6,7 +6,7 @@ A paper plugin that generate necessary files for MockBukkit.
 
 1. [Getting started](#getting-started)
 
-## :getting-started: Getting started
+## :mag_usage: Getting started
 
 To build this project you will need to have Java 21 or later installed and execute:
 ```bash
