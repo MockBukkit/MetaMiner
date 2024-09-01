@@ -16,8 +16,6 @@ import org.mockbukkit.metaminer.internal.entity.extractor.DefaultEntityInformati
 import org.mockbukkit.metaminer.internal.entity.extractor.MediumEntityInformationExtractor;
 import org.mockbukkit.metaminer.internal.entity.extractor.SmallEntityInformationExtractor;
 import org.mockbukkit.metaminer.util.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,10 +28,6 @@ import java.util.stream.Collectors;
 
 public class EntityTypeGenerator implements DataGenerator
 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeGenerator.class);
-
-	private static final int MAXIMUM_DECIMAL_PLACE = 4;
-
 	private final File workDirectory;
 
 	public EntityTypeGenerator(File workDirectory)
@@ -46,7 +40,6 @@ public class EntityTypeGenerator implements DataGenerator
 	public void generateData() throws IOException
 	{
 		File entitiesDirectory = new File(workDirectory, "entities");
-
 		Map<String, net.minecraft.world.entity.EntityType<?>> entities = getEntities();
 
 		for (Map.Entry<String, net.minecraft.world.entity.EntityType<? extends Entity>> entry : entities.entrySet()) {
@@ -85,11 +78,11 @@ public class EntityTypeGenerator implements DataGenerator
 		for (EntitySubType state : possibleStates) {
 			switch (state)
 			{
-			case DEFAULT -> root.add("default", DefaultEntityInformationExtractor.process(entityType, mojangEntityType));
-			case BABY -> root.add("baby", BabyEntityInformationExtractor.process(entityType, mojangEntityType));
-			case SMALL -> root.add("small", SmallEntityInformationExtractor.process(entityType, mojangEntityType));
-			case MEDIUM -> root.add("medium", MediumEntityInformationExtractor.process(entityType, mojangEntityType));
-			case BIG -> root.add("big", BigEntityInformationExtractor.process(entityType, mojangEntityType));
+			case DEFAULT -> root.add(EntitySubType.DEFAULT.getName(), DefaultEntityInformationExtractor.process(entityType, mojangEntityType));
+			case BABY -> root.add(EntitySubType.BABY.getName(), BabyEntityInformationExtractor.process(entityType, mojangEntityType));
+			case SMALL -> root.add(EntitySubType.SMALL.getName(), SmallEntityInformationExtractor.process(entityType, mojangEntityType));
+			case MEDIUM -> root.add(EntitySubType.MEDIUM.getName(), MediumEntityInformationExtractor.process(entityType, mojangEntityType));
+			case BIG -> root.add(EntitySubType.BIG.getName(), BigEntityInformationExtractor.process(entityType, mojangEntityType));
 			default -> throw new UnsupportedOperationException("Unknown entity state: " + state);
 			}
 		}
