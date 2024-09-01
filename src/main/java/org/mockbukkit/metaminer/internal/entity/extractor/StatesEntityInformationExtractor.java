@@ -2,6 +2,7 @@ package org.mockbukkit.metaminer.internal.entity.extractor;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.mockbukkit.metaminer.internal.entity.EntityInformationExtractor;
 import org.mockbukkit.metaminer.internal.entity.EntityKeys;
@@ -54,7 +55,20 @@ public class StatesEntityInformationExtractor implements EntityInformationExtrac
 			jsonObject.add("sitting", camelSitting);
 		}
 
-		// TODO: Enderman - Angry
+		if (Enderman.class.isAssignableFrom(entityClass))
+		{
+			BigDecimal angryHeightDiff = BigDecimal.valueOf(0.35);
+			BigDecimal width = BigDecimal.valueOf(mojangEntityType.getWidth()).multiply(scale);
+			BigDecimal height = BigDecimal.valueOf(mojangEntityType.getHeight()).add(angryHeightDiff).multiply(scale);
+			BigDecimal eyeHeight = BigDecimal.valueOf(mojangEntityType.getDimensions().eyeHeight()).add(angryHeightDiff).multiply(scale);
+
+			JsonObject camelSitting = new JsonObject();
+			camelSitting.addProperty(EntityKeys.WIDTH, NumberUtils.toDouble(width));
+			camelSitting.addProperty(EntityKeys.HEIGHT, NumberUtils.toDouble(height));
+			camelSitting.addProperty(EntityKeys.EYE_HEIGHT, NumberUtils.toDouble(eyeHeight));
+			jsonObject.add("angry", camelSitting);
+		}
+
 		// TODO: Player - Sneaking, Gliding, Swimming, Sleeping
 
 		return jsonObject;
