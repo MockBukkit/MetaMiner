@@ -12,13 +12,16 @@ import org.mockbukkit.metaminer.util.JsonUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ItemStackSetTypeTestDataGenerator implements DataGenerator
 {
 
 	private final File folder;
 
-	public ItemStackSetTypeTestDataGenerator(File folder){
+	public ItemStackSetTypeTestDataGenerator(File folder)
+	{
 		this.folder = folder;
 	}
 
@@ -38,7 +41,12 @@ public class ItemStackSetTypeTestDataGenerator implements DataGenerator
 				outputData.add("material", new JsonPrimitive(itemStack.getType().key().asString()));
 				if (itemStack.getItemMeta() != null)
 				{
-					outputData.add("meta", new JsonPrimitive(getMetaInterface(itemStack.getItemMeta().getClass()).getName()));
+					JsonArray itemMeta = new JsonArray();
+					for (Class<? extends ItemMeta> clazz : getMetaInterfaces(itemStack.getItemMeta().getClass()))
+					{
+						itemMeta.add(clazz.getName());
+					}
+					outputData.add("meta", itemMeta);
 				}
 			}
 			catch (Exception e)
@@ -53,22 +61,23 @@ public class ItemStackSetTypeTestDataGenerator implements DataGenerator
 		JsonUtil.dump(jsonArray, file);
 	}
 
-	private Class<? extends ItemMeta> getMetaInterface(Class<?> aClass)
+	private Set<Class<? extends ItemMeta>> getMetaInterfaces(Class<?> aClass)
 	{
 		Class<?>[] interfaces = aClass.getInterfaces();
+		Set<Class<? extends ItemMeta>> output = new HashSet<>();
 		for (Class<?> anInterface : interfaces)
 		{
 			if (ItemMeta.class.isAssignableFrom(anInterface))
 			{
-				return (Class<? extends ItemMeta>) anInterface;
+				output.add((Class<? extends ItemMeta>) anInterface);
 			}
 		}
 		Class<?> superClass = aClass.getSuperclass();
 		if (superClass != null)
 		{
-			return getMetaInterface(superClass);
+			output.addAll(getMetaInterfaces(superClass));
 		}
-		throw new IllegalArgumentException("Expected a class extending the item meta interface, got: " + aClass.getName());
+		return output;
 	}
 
 }
