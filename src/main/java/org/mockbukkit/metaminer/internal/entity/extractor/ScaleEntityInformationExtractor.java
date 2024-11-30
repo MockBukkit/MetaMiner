@@ -13,6 +13,13 @@ public class ScaleEntityInformationExtractor implements EntityInformationExtract
 {
 	public static JsonObject process(EntityType entityType, net.minecraft.world.entity.EntityType<?> mojangEntityType, double scale)
 	{
+		JsonObject jsonObject = processWithoutRecursion(entityType, mojangEntityType, scale);
+		StatesEntityInformationExtractor.process(entityType, mojangEntityType, scale).ifPresent(object -> jsonObject.add(EntityKeys.STATES, object));
+		return jsonObject;
+	}
+
+	public static JsonObject processWithoutRecursion(EntityType entityType, net.minecraft.world.entity.EntityType<?> mojangEntityType, double scale)
+	{
 		return new ScaleEntityInformationExtractor(scale).extractInformation(entityType, mojangEntityType);
 	}
 
@@ -43,8 +50,6 @@ public class ScaleEntityInformationExtractor implements EntityInformationExtract
 		jsonObject.addProperty(EntityKeys.HEIGHT, NumberUtils.toDouble(scaledHeight));
 		jsonObject.addProperty(EntityKeys.SCALE, NumberUtils.toDouble(scale));
 		jsonObject.addProperty(EntityKeys.EYE_HEIGHT, NumberUtils.toDouble(scaledEyeHeight));
-
-		StatesEntityInformationExtractor.process(entityType, mojangEntityType, scale).ifPresent(object -> jsonObject.add(EntityKeys.STATES, object));
 
 		return jsonObject;
 	}

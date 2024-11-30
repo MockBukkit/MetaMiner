@@ -6,6 +6,7 @@ import org.bukkit.entity.Camel;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.PufferFish;
 import org.mockbukkit.metaminer.internal.entity.EntityInformationExtractor;
 
 import javax.annotation.Nonnull;
@@ -68,6 +69,21 @@ public class StatesEntityInformationExtractor implements EntityInformationExtrac
 			// Sneaking
 			JsonObject sleeping = HeightDifferenceEntityInformationExtractor.process(entityType, mojangEntityType, -1.6D, scale);
 			jsonObject.add("sleeping", sleeping);
+		}
+
+		if (PufferFish.class.isAssignableFrom(entityClass))
+		{
+			// UNPUFFED
+			JsonObject unPuffed = ScaleEntityInformationExtractor.processWithoutRecursion(entityType, mojangEntityType, 0.5);
+			jsonObject.add("unpuffed", unPuffed);
+
+			// SEMI_PUFFED
+			JsonObject semiPuffed = ScaleEntityInformationExtractor.processWithoutRecursion(entityType, mojangEntityType, 0.7);
+			jsonObject.add("semi_puffed", semiPuffed);
+
+			// PUFFED
+			JsonObject puffed = ScaleEntityInformationExtractor.processWithoutRecursion(entityType, mojangEntityType, 1.0);
+			jsonObject.add("puffed", puffed);
 		}
 
 		return jsonObject;
