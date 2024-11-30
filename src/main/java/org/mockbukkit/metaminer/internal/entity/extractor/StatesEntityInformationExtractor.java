@@ -2,11 +2,11 @@ package org.mockbukkit.metaminer.internal.entity.extractor;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+import org.bukkit.entity.Camel;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.mockbukkit.metaminer.internal.entity.EntityInformationExtractor;
-import org.mockbukkit.metaminer.internal.entity.EntityKeys;
-import org.mockbukkit.metaminer.util.NumberUtils;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
@@ -41,35 +41,34 @@ public class StatesEntityInformationExtractor implements EntityInformationExtrac
 
 		JsonObject jsonObject = new JsonObject();
 
-		if (org.bukkit.entity.Camel.class.isAssignableFrom(entityClass))
+		if (Camel.class.isAssignableFrom(entityClass))
 		{
-			double sittingHeightDiff = 1.43D;
-			BigDecimal width = BigDecimal.valueOf(mojangEntityType.getWidth()).multiply(scale);
-			BigDecimal height = BigDecimal.valueOf(mojangEntityType.getHeight()).subtract(BigDecimal.valueOf(sittingHeightDiff)).multiply(scale);
-			BigDecimal eyeHeight = BigDecimal.valueOf(mojangEntityType.getDimensions().eyeHeight()).subtract(BigDecimal.valueOf(sittingHeightDiff)).multiply(scale);
-
-			JsonObject camelSitting = new JsonObject();
-			camelSitting.addProperty(EntityKeys.WIDTH, NumberUtils.toDouble(width));
-			camelSitting.addProperty(EntityKeys.HEIGHT, NumberUtils.toDouble(height));
-			camelSitting.addProperty(EntityKeys.EYE_HEIGHT, NumberUtils.toDouble(eyeHeight));
+			JsonObject camelSitting = HeightDifferenceEntityInformationExtractor.process(entityType, mojangEntityType, -1.43D, scale);
 			jsonObject.add("sitting", camelSitting);
 		}
 
 		if (Enderman.class.isAssignableFrom(entityClass))
 		{
-			BigDecimal angryHeightDiff = BigDecimal.valueOf(0.35);
-			BigDecimal width = BigDecimal.valueOf(mojangEntityType.getWidth()).multiply(scale);
-			BigDecimal height = BigDecimal.valueOf(mojangEntityType.getHeight()).add(angryHeightDiff).multiply(scale);
-			BigDecimal eyeHeight = BigDecimal.valueOf(mojangEntityType.getDimensions().eyeHeight()).add(angryHeightDiff).multiply(scale);
-
-			JsonObject camelSitting = new JsonObject();
-			camelSitting.addProperty(EntityKeys.WIDTH, NumberUtils.toDouble(width));
-			camelSitting.addProperty(EntityKeys.HEIGHT, NumberUtils.toDouble(height));
-			camelSitting.addProperty(EntityKeys.EYE_HEIGHT, NumberUtils.toDouble(eyeHeight));
-			jsonObject.add("angry", camelSitting);
+			JsonObject enderManAngry = HeightDifferenceEntityInformationExtractor.process(entityType, mojangEntityType, 0.35D, scale);
+			jsonObject.add("angry", enderManAngry);
 		}
 
-		// TODO: Player - Sneaking, Gliding, Swimming, Sleeping
+		if (Player.class.isAssignableFrom(entityClass))
+		{
+			// Sneaking
+			JsonObject camelSitting = HeightDifferenceEntityInformationExtractor.process(entityType, mojangEntityType, -0.3D, scale);
+			jsonObject.add("sneaking", camelSitting);
+
+			// Gliding / Swimming / Crawling
+			JsonObject gliding = HeightDifferenceEntityInformationExtractor.process(entityType, mojangEntityType, -1.2D, scale);
+			jsonObject.add("gliding", gliding);
+			jsonObject.add("swimming", gliding);
+			jsonObject.add("crawling", gliding);
+
+			// Sneaking
+			JsonObject sleeping = HeightDifferenceEntityInformationExtractor.process(entityType, mojangEntityType, -1.6D, scale);
+			jsonObject.add("sleeping", sleeping);
+		}
 
 		return jsonObject;
 	}

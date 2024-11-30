@@ -16,18 +16,22 @@ import org.mockbukkit.metaminer.internal.entity.extractor.DefaultEntityInformati
 import org.mockbukkit.metaminer.internal.entity.extractor.MediumEntityInformationExtractor;
 import org.mockbukkit.metaminer.internal.entity.extractor.SmallEntityInformationExtractor;
 import org.mockbukkit.metaminer.util.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class EntityTypeGenerator implements DataGenerator
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeGenerator.class);
+
 	private final File workDirectory;
 
 	public EntityTypeGenerator(File workDirectory)
@@ -41,6 +45,9 @@ public class EntityTypeGenerator implements DataGenerator
 	{
 		File entitiesDirectory = new File(workDirectory, "entities");
 		Map<String, net.minecraft.world.entity.EntityType<?>> entities = getEntities();
+
+		int entityCounter = 0;
+		int entityTotal = entities.size();
 
 		for (Map.Entry<String, net.minecraft.world.entity.EntityType<? extends Entity>> entry : entities.entrySet()) {
 
@@ -60,6 +67,11 @@ public class EntityTypeGenerator implements DataGenerator
 								.map(EntityType::getKey)
 								.map(NamespacedKey::getKey)
 								.collect(Collectors.toSet())));
+			}
+
+			if (LOGGER.isInfoEnabled())
+			{
+				LOGGER.info("[{}/{}] Working on entity {}...", String.format("%3d", ++entityCounter), entityTotal, name);
 			}
 
 			JsonObject root = extractInformation(entityType, mojangEntityType);
@@ -130,7 +142,7 @@ public class EntityTypeGenerator implements DataGenerator
 
 	public static Map<String, net.minecraft.world.entity.EntityType<? extends Entity>> getEntities() {
 
-		Map<String, net.minecraft.world.entity.EntityType<?>> entityTypes = new HashMap<>();
+		Map<String, net.minecraft.world.entity.EntityType<?>> entityTypes = new TreeMap<>();
 
 		for (EntityType entityType : EntityType.values()) {
 

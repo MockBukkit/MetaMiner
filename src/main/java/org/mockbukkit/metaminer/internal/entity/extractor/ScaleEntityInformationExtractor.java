@@ -30,19 +30,19 @@ public class ScaleEntityInformationExtractor implements EntityInformationExtract
 		BigDecimal normalHeight = BigDecimal.valueOf(mojangEntityType.getHeight());
 		BigDecimal normalEyeHeight = BigDecimal.valueOf(mojangEntityType.getDimensions().eyeHeight());
 
-		BigDecimal babyWidth = normalWidth.multiply(scale);
-		BigDecimal babyHeight = normalHeight.multiply(scale);
-		BigDecimal babyEyeHeight = BigDecimal.ZERO;
+		BigDecimal scaledWidth = normalWidth.multiply(scale);
+		BigDecimal scaledHeight = normalHeight.multiply(scale);
+		BigDecimal scaledEyeHeight = BigDecimal.ZERO;
 		if (BigDecimal.ZERO.compareTo(normalHeight) != 0)
 		{
-			babyEyeHeight = babyHeight.multiply(normalEyeHeight).divide(normalHeight, RoundingMode.HALF_UP);
+			scaledEyeHeight = scaledHeight.multiply(normalEyeHeight).divide(normalHeight, RoundingMode.HALF_UP);
 		}
 
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(EntityKeys.WIDTH, NumberUtils.toDouble(babyWidth));
-		jsonObject.addProperty(EntityKeys.HEIGHT, NumberUtils.toDouble(babyHeight));
+		jsonObject.addProperty(EntityKeys.WIDTH, NumberUtils.toDouble(scaledWidth));
+		jsonObject.addProperty(EntityKeys.HEIGHT, NumberUtils.toDouble(scaledHeight));
 		jsonObject.addProperty(EntityKeys.SCALE, NumberUtils.toDouble(scale));
-		jsonObject.addProperty(EntityKeys.EYE_HEIGHT, NumberUtils.toDouble(babyEyeHeight));
+		jsonObject.addProperty(EntityKeys.EYE_HEIGHT, NumberUtils.toDouble(scaledEyeHeight));
 
 		StatesEntityInformationExtractor.process(entityType, mojangEntityType, scale).ifPresent(object -> jsonObject.add(EntityKeys.STATES, object));
 
