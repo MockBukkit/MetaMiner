@@ -8,7 +8,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Frog;
+import org.bukkit.entity.Parrot;
+import org.bukkit.entity.PiglinBrute;
 import org.bukkit.entity.Slime;
+import org.bukkit.entity.WanderingTrader;
 import org.mockbukkit.metaminer.DataGenerator;
 import org.mockbukkit.metaminer.internal.entity.extractor.BabyEntityInformationExtractor;
 import org.mockbukkit.metaminer.internal.entity.extractor.BigEntityInformationExtractor;
@@ -118,7 +122,20 @@ public class EntityTypeGenerator implements DataGenerator
 		// Add the baby state
 		if (Ageable.class.isAssignableFrom(entityClass))
 		{
-			possibleStates.add(EntitySubType.BABY);
+			Set<Class<?>> ignoredClasses = Set.of(
+				// Frog is a special mob, unlike all other mobs with baby variants, the tadpole is treated
+				// by the game as a completely different mob from the frog.
+				Frog.class,
+				// Parrot's don't breed and don't have baby variant
+				Parrot.class,
+				// Piglin Brute don't breed and don't have baby variant
+				PiglinBrute.class,
+				// Wandering Trader don't breed and don't have baby variant
+				WanderingTrader.class
+			);
+			if (ignoredClasses.stream().noneMatch(c -> c.isAssignableFrom(entityClass))) {
+				possibleStates.add(EntitySubType.BABY);
+			}
 		}
 
 		// Add the armor stand
