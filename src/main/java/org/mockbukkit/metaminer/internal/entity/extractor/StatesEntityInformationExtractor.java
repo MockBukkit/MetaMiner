@@ -7,7 +7,9 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.PufferFish;
+import org.bukkit.entity.Shulker;
 import org.mockbukkit.metaminer.internal.entity.EntityInformationExtractor;
+import org.mockbukkit.metaminer.internal.entity.EntityKeys;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
@@ -84,6 +86,25 @@ public class StatesEntityInformationExtractor implements EntityInformationExtrac
 			// PUFFED
 			JsonObject puffed = ScaleEntityInformationExtractor.processWithoutRecursion(entityType, mojangEntityType, 1.0);
 			jsonObject.add("puffed", puffed);
+		}
+
+		if (Shulker.class.isAssignableFrom(entityClass))
+		{
+			// Closed
+			JsonObject closed = HeightDifferenceEntityInformationExtractor.process(entityType, mojangEntityType, 0.0, scale);
+			jsonObject.add("closed", closed);
+
+			// Peeking
+			JsonObject peeking = HeightDifferenceEntityInformationExtractor.process(entityType, mojangEntityType, 0.2, scale);
+			jsonObject.add("peeking", peeking);
+
+			// Open
+			JsonObject open = HeightDifferenceEntityInformationExtractor.process(entityType, mojangEntityType, 1.0, scale);
+			jsonObject.add("open", open);
+
+			// The eye level is always fixed.
+			peeking.addProperty(EntityKeys.EYE_HEIGHT, closed.get(EntityKeys.EYE_HEIGHT).getAsBigDecimal());
+			open.addProperty(EntityKeys.EYE_HEIGHT, closed.get(EntityKeys.EYE_HEIGHT).getAsBigDecimal());
 		}
 
 		return jsonObject;
