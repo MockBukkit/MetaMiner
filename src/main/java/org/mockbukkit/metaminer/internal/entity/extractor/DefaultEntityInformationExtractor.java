@@ -1,6 +1,9 @@
 package org.mockbukkit.metaminer.internal.entity.extractor;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.mockbukkit.metaminer.internal.entity.EntityInformationExtractor;
 import org.mockbukkit.metaminer.internal.entity.EntityKeys;
@@ -31,6 +34,13 @@ public class DefaultEntityInformationExtractor implements EntityInformationExtra
 		jsonObject.addProperty(EntityKeys.EYE_HEIGHT, mojangEntityType.getDimensions().eyeHeight());
 
 		StatesEntityInformationExtractor.process(entityType, mojangEntityType, scale).ifPresent(object -> jsonObject.add(EntityKeys.STATES, object));
+
+		// Process the class
+		Class<? extends Entity> entityClass = entityType.getEntityClass();
+		Preconditions.checkState(entityClass != null, "The entity {} does not have a entity class.", entityType.name());
+		if (AbstractArrow.class.isAssignableFrom(entityClass)) {
+			jsonObject.addProperty(EntityKeys.BASE_DAMAGE, BaseDamageInformationExtractor.process(entityType));
+		}
 
 		return jsonObject;
 	}

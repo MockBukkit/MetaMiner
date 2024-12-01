@@ -7,6 +7,7 @@ public class EntityKeys
 	public static final String SCALE = "scale";
 	public static final String EYE_HEIGHT = "eyeHeight";
 	public static final String STATES = "states";
+	public static final String BASE_DAMAGE = "baseDamage";
 
 	private EntityKeys()
 	{
