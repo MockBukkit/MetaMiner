@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mockbukkit.metaminer.internal.entity.EntityTypeGenerator;
 import org.mockbukkit.metaminer.internal.MaterialDataGenerator;
 import org.mockbukkit.metaminer.internal.potion.PotionDataGenerator;
 import org.mockbukkit.metaminer.internal.tags.InternalTagDataGenerator;
@@ -55,7 +56,7 @@ public class MetaMiner extends JavaPlugin
 		return List.of(new KeyedDataGenerator(this.getDataFolder()), new InternalTagDataGenerator(this.getDataFolder()),
 				new PotionDataGenerator(this.getDataFolder()), new TagDataGenerator(this.getDataFolder()),
 				new MaterialDataGenerator(this.getDataFolder()), new RegistryKeyClassDataGenerator(this.getDataFolder()),
-				new TranslationDataGenerator(this.getDataFolder()));
+				new TranslationDataGenerator(this.getDataFolder()), new EntityTypeGenerator(this.getDataFolder()));
 	}
 
 }
