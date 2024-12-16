@@ -63,7 +63,7 @@ public class TagDataGenerator implements DataGenerator
 	{
 		return Map.of("blocks", Material.class,
 				"items", Material.class,
-				"fluids", Material.class,
+				"fluids", Fluid.class,
 				"entity_types", EntityType.class,
 				"game_events", GameEvent.class);
 	}
