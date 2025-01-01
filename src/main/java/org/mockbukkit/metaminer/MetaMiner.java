@@ -10,8 +10,10 @@ import org.mockbukkit.metaminer.internal.tags.InternalTagDataGenerator;
 import org.mockbukkit.metaminer.keyed.KeyedDataGenerator;
 import org.mockbukkit.metaminer.keyed.RegistryKeyClassDataGenerator;
 import org.mockbukkit.metaminer.tags.TagDataGenerator;
+import org.mockbukkit.metaminer.tests.ItemStackTestDataGenerator;
 import org.mockbukkit.metaminer.translation.TranslationDataGenerator;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -46,16 +48,18 @@ public class MetaMiner extends JavaPlugin
 		this.getLogger().log(Level.INFO, "Successfully generated data!");
 		this.getLogger().log(Level.INFO, String.format("The files can be found at '%s'", this.getDataFolder().getPath()));
 		this.getLogger().log(Level.INFO, "Copy these files with their respective directories over to the MockBukkit resources folder.");
-		this.getLogger().log(Level.INFO, Bukkit.getServer().createBlockData(Material.LEGACY_WOOD).getMaterial().toString());
 		getServer().shutdown(); // We're done. So just call it quits.
 	}
 
 	private List<DataGenerator> getDataGenerators()
 	{
-		return List.of(new KeyedDataGenerator(this.getDataFolder()), new InternalTagDataGenerator(this.getDataFolder()),
-				new PotionDataGenerator(this.getDataFolder()), new TagDataGenerator(this.getDataFolder()),
-				new MaterialDataGenerator(this.getDataFolder()), new RegistryKeyClassDataGenerator(this.getDataFolder()),
-				new TranslationDataGenerator(this.getDataFolder()));
+		File testFolder = new File(this.getDataFolder(), "src/test/resources");
+		File mainFolder = new File(this.getDataFolder(), "src/main/resources");
+		return List.of(new KeyedDataGenerator(mainFolder), new InternalTagDataGenerator(mainFolder),
+				new PotionDataGenerator(mainFolder), new TagDataGenerator(mainFolder),
+				new MaterialDataGenerator(mainFolder), new RegistryKeyClassDataGenerator(mainFolder),
+				new MaterialDataGenerator(mainFolder), new TranslationDataGenerator(this.getDataFolder()),
+				new RegistryKeyClassDataGenerator(mainFolder), new ItemStackTestDataGenerator(testFolder));
 	}
 
 }
