@@ -6,7 +6,6 @@ import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
@@ -56,6 +55,10 @@ public class MethodDataScanner
 
 	private static @Nullable JsonElement getReturnValue(Class<?> returnType, Method method, Keyed object) throws InvocationTargetException, IllegalAccessException
 	{
+		if (returnType == Void.TYPE)
+		{
+			return null;
+		}
 		if (returnType == boolean.class)
 		{
 			return new JsonPrimitive((Boolean) method.invoke(object));
@@ -88,13 +91,17 @@ public class MethodDataScanner
 		{
 			return new JsonPrimitive((String) method.invoke(object));
 		}
-		if (returnType.isAssignableFrom(NamespacedKey.class))
+		if (Keyed.class.isAssignableFrom(returnType))
 		{
-			return new JsonPrimitive(((NamespacedKey) method.invoke(object)).toString());
+			return new JsonPrimitive(((Keyed) method.invoke(object)).key().asString());
 		}
-		if (returnType.isAssignableFrom(Component.class))
+		if (Component.class.isAssignableFrom(returnType))
 		{
 			return GsonComponentSerializer.gson().serializeToTree((Component) method.invoke(object));
+		}
+		if (returnType.isEnum())
+		{
+			return new JsonPrimitive(((Enum<?>) method.invoke(object)).name());
 		}
 		return null;
 	}
