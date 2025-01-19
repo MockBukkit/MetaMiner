@@ -1,7 +1,7 @@
 plugins {
 	id("java")
-	id("io.papermc.paperweight.userdev") version "1.7.1"
-	id("xyz.jpenilla.run-paper") version "2.3.0"
+	id("io.papermc.paperweight.userdev") version "1.7.7"
+	id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "org.mockbukkit"
@@ -13,8 +13,7 @@ repositories {
 }
 
 dependencies {
-	paperweight.paperDevBundle("${property("paper.api.version")}")
-	implementation("io.papermc.paper:paper-api:${property("paper.api.version")}")
+	paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT") // TODO: paperweight does not work on latest version yet.
 }
 
 tasks {
@@ -25,5 +24,9 @@ tasks {
 
 	processResources {
 		filesMatching("**/plugin.yml") { expand(project.properties) }
+	}
+
+	runServer {
+		minecraftVersion("1.21.4")
 	}
 }
